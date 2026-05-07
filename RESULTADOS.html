@@ -714,7 +714,7 @@
 				✓ Gracias por tu interés. Nos pondremos en contacto pronto.
 			</div>
 
-			<form id="leadForm" method="POST" action="https://formspree.io/f/xgodlwgj">
+			<form id="leadForm">
 				<div class="form-row">
 					<div class="form-group">
 						<label for="name">Nombre completo</label>
@@ -811,11 +811,10 @@
 			document.getElementById('tableCostDiff').textContent = '−' + formatCurrency(data.monthlySavings);
 		}
 
-		// Manejo del formulario de leads
-		document.getElementById('leadForm').addEventListener('submit', (e) => {
-			// Permitir que Formspree procese el formulario
-			// Pero también guardamos en localStorage
-			
+		// Manejo del formulario de leads con Formspree
+		document.getElementById('leadForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+
 			const name = document.getElementById('name').value;
 			const company = document.getElementById('company').value;
 			const email = document.getElementById('email').value;
@@ -823,6 +822,7 @@
 
 			const resultData = JSON.parse(localStorage.getItem('calculatorResults'));
 
+			// Guardar en localStorage
 			const leadData = {
 				name: name,
 				company: company,
@@ -836,18 +836,29 @@
 			existingLeads.push(leadData);
 			localStorage.setItem('leads', JSON.stringify(existingLeads));
 
-			// Mostrar mensaje de éxito después del envío a Formspree
+			// Enviar a Formspree vía AJAX
+			try {
+				await fetch('https://formspree.io/f/xgodlwgj', {
+					method: 'POST',
+					body: new FormData(document.getElementById('leadForm')),
+					headers: {
+						'Accept': 'application/json'
+					}
+				});
+			} catch (error) {
+				console.log('Error en envío:', error);
+			}
+
+			// Mostrar mensaje de éxito y redirigir
+			const form = document.getElementById('leadForm');
+			const successMessage = document.getElementById('successMessage');
+
+			form.style.display = 'none';
+			successMessage.classList.add('show');
+
 			setTimeout(() => {
-				const form = document.getElementById('leadForm');
-				const successMessage = document.getElementById('successMessage');
-
-				form.style.display = 'none';
-				successMessage.classList.add('show');
-
-				setTimeout(() => {
-					window.location.href = 'calculadora.html';
-				}, 3000);
-			}, 1000);
+				window.location.href = 'calculadora.html';
+			}, 3000);
 		});
 
 		window.addEventListener('DOMContentLoaded', loadResults);
