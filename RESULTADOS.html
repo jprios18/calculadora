@@ -714,26 +714,26 @@
 				✓ Gracias por tu interés. Nos pondremos en contacto pronto.
 			</div>
 
-			<form id="leadForm">
+			<form id="leadForm" method="POST" action="https://formspree.io/f/xgodlwgj">
 				<div class="form-row">
 					<div class="form-group">
 						<label for="name">Nombre completo</label>
-						<input type="text" id="name" placeholder="Juan Pérez" required>
+						<input type="text" id="name" name="nombre" placeholder="Juan Pérez" required>
 					</div>
 					<div class="form-group">
 						<label for="company">Empresa</label>
-						<input type="text" id="company" placeholder="Mi Empresa S.A." required>
+						<input type="text" id="company" name="empresa" placeholder="Mi Empresa S.A." required>
 					</div>
 				</div>
 
 				<div class="form-row">
 					<div class="form-group">
 						<label for="email">Correo electrónico</label>
-						<input type="email" id="email" placeholder="juan@empresa.com" required>
+						<input type="email" id="email" name="email" placeholder="juan@empresa.com" required>
 					</div>
 					<div class="form-group">
 						<label for="phone">Teléfono</label>
-						<input type="tel" id="phone" placeholder="+52 123 456 7890" required>
+						<input type="tel" id="phone" name="telefono" placeholder="+52 123 456 7890" required>
 					</div>
 				</div>
 
@@ -813,8 +813,9 @@
 
 		// Manejo del formulario de leads
 		document.getElementById('leadForm').addEventListener('submit', (e) => {
-			e.preventDefault();
-
+			// Permitir que Formspree procese el formulario
+			// Pero también guardamos en localStorage
+			
 			const name = document.getElementById('name').value;
 			const company = document.getElementById('company').value;
 			const email = document.getElementById('email').value;
@@ -835,15 +836,18 @@
 			existingLeads.push(leadData);
 			localStorage.setItem('leads', JSON.stringify(existingLeads));
 
-			const form = document.getElementById('leadForm');
-			const successMessage = document.getElementById('successMessage');
-
-			form.style.display = 'none';
-			successMessage.classList.add('show');
-
+			// Mostrar mensaje de éxito después del envío a Formspree
 			setTimeout(() => {
-				window.location.href = 'calculadora.html';
-			}, 3000);
+				const form = document.getElementById('leadForm');
+				const successMessage = document.getElementById('successMessage');
+
+				form.style.display = 'none';
+				successMessage.classList.add('show');
+
+				setTimeout(() => {
+					window.location.href = 'calculadora.html';
+				}, 3000);
+			}, 1000);
 		});
 
 		window.addEventListener('DOMContentLoaded', loadResults);
