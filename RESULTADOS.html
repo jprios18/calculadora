@@ -651,7 +651,7 @@
 				<div class="compaction-card highlight">
 					<div class="compaction-label">Espacio equivalente a residuos sin compactar</div>
 					<div class="compaction-value" id="compactedTonnageDisplay">-</div>
-					<div class="compaction-subtitle">Reducción del 75% en volumen</div>
+					<div class="compaction-subtitle">Reducción del 65% en volumen</div>
 				</div>
 			</div>
 			<div class="compaction-grid">
@@ -662,7 +662,7 @@
 				</div>
 			</div>
 			<div class="compaction-disclaimer">
-				📌 <strong>Explicación:</strong> Con una prensa Macpresse, reduces el volumen de tus residuos en un 75% gracias a la compresión. Esto significa que en lugar de ocupar 100% del espacio, ahora solo utilizas el 25%, optimizando significativamente tu almacenamiento y reduciendo viajes de recolección.
+				📌 <strong>Explicación:</strong> Con una prensa Macpresse, reduces el volumen de tus residuos en un 65% gracias a la compresión. Esto significa que en lugar de ocupar 100% del espacio, ahora solo utilizas el 35%, optimizando significativamente tu almacenamiento y reduciendo viajes de recolección.
 			</div>
 		</div>
 
@@ -779,21 +779,26 @@
 			document.getElementById('summaryCollections').textContent = Math.round(data.collections);
 			document.getElementById('summaryCost').textContent = formatCurrency(data.cost);
 
-			// Resultados principales
+			// Resultados principales - Aplicar ahorro del 35%
+			const savingsPercentage = 0.35;
+			const newCost = data.currentCost * (1 - savingsPercentage);
+			const monthlySavings = data.currentCost - newCost;
+
 			document.getElementById('currentCostDisplay').textContent = formatCurrency(data.currentCost);
-			document.getElementById('newCostDisplay').textContent = formatCurrency(data.newCost);
-			document.getElementById('monthlySavingsDisplay').textContent = formatCurrency(data.monthlySavings);
-			document.getElementById('percentageSavingsDisplay').textContent = data.percentageSavings.toFixed(1) + '%';
+			document.getElementById('newCostDisplay').textContent = formatCurrency(newCost);
+			document.getElementById('monthlySavingsDisplay').textContent = formatCurrency(monthlySavings);
+			document.getElementById('percentageSavingsDisplay').textContent = '35%';
 
 			// Métricas clave
-			document.getElementById('annualSavingsDisplay').textContent = formatCurrency(data.annualSavings);
+			const annualSavings = monthlySavings * 12;
+			document.getElementById('annualSavingsDisplay').textContent = formatCurrency(annualSavings);
 			
 			const newCollections = data.collections * 0.6;
 			const reductionCollections = Math.round(data.collections - newCollections);
 			document.getElementById('collectionsReductionDisplay').textContent = reductionCollections;
 
-			// Reducción de volumen con compactación
-			const compactionReduction = 0.75;
+			// Reducción de volumen con compactación - 65% de reducción, 35% de espacio restante
+			const compactionReduction = 0.65;
 			const compactedTonnage = data.tonnage * (1 - compactionReduction);
 			const spaceReduction = ((1 - compactionReduction) * 100).toFixed(0);
 
@@ -807,8 +812,8 @@
 			document.getElementById('tableCollectionsDiff').textContent = '−' + reductionCollections;
 			
 			document.getElementById('tableCurrentCost').textContent = formatCurrency(data.currentCost);
-			document.getElementById('tableNewCost').textContent = formatCurrency(data.newCost);
-			document.getElementById('tableCostDiff').textContent = '−' + formatCurrency(data.monthlySavings);
+			document.getElementById('tableNewCost').textContent = formatCurrency(newCost);
+			document.getElementById('tableCostDiff').textContent = '−' + formatCurrency(monthlySavings);
 		}
 
 		// Manejo del formulario de leads con Formspree
